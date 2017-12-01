@@ -1,0 +1,11 @@
+postgresUser: postgres
+postgresPassword: postgres
+postgresDatabase: awx
+
+persistence:
+  enabled: true
+  storageClass: gp2
+  size: 10Gi
+
+metrics:
+  enabled: true
