@@ -1,1 +1,2 @@
-awx/charts
+awx/charts/*
+!awx/charts/.gitkeep
