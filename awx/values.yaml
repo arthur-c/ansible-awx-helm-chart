@@ -30,11 +30,6 @@ service:
   internalPort: 8052
   externalPort: 8052
 
-  # name: nginx
-  # type: ClusterIP
-  # externalPort: 80
-  # internalPort: 80
-
 ingress:
   enabled: false
   # Used to create an Ingress record.
@@ -49,9 +44,12 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
+
+# Chart values https://github.com/helm/charts/blob/master/stable/memcached/values.yaml
 memcached:
   install: true
 
+# Chart values https://github.com/helm/charts/blob/master/stable/rabbitmq/values.yaml
 rabbitmq:
   install: true
   rabbitmq:
@@ -72,7 +70,7 @@ rabbitmq:
         ## awx vhost
         default_vhost = awx
 
-
+# Chart values https://github.com/helm/charts/blob/master/stable/postgresql/values.yaml
 postgresql:
   install: true
   image:
@@ -83,7 +81,7 @@ postgresql:
   postgresqlPassword: awx
   postgresqlDatabase: awx
   persistence:
-    enabled: false
+    enabled: true
   metrics:
     enabled: false
 
