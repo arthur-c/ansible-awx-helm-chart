@@ -65,8 +65,6 @@ spec:
             - mountPath: /etc/tower
               name: {{ include "awx.fullname" . }}-application-config
           env:
-            - name: AWX_SKIP_MIGRATIONS
-              value: "1"
             - name: DATABASE_USER
               value: {{ .Values.postgresql.postgresqlUsername }}
             - name: DATABASE_NAME
