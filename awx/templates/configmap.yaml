@@ -1,7 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "awx-web-task.name" . }}
+  name: {{ include "awx.fullname" . }}-application-config
+  labels:
+    app.kubernetes.io/name: {{ include "awx.name" . }}
+    helm.sh/chart: {{ include "awx.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   secret_key: {{ .Values.awx_secret_key }}
   awx_settings: |
@@ -9,22 +14,27 @@ data:
     import socket
     ADMINS = ()
 
-    # Container environments don't like chroots
+
     AWX_PROOT_ENABLED = False
+
+    # Automatically deprovision pods that go offline
+    AWX_AUTO_DEPROVISION_INSTANCES = True
 
     #Autoprovisioning should replace this
     CLUSTER_HOST_ID = socket.gethostname()
     SYSTEM_UUID = '00000000-0000-0000-0000-000000000000'
-    CELERY_TASK_QUEUES += (Queue(CLUSTER_HOST_ID, Exchange(CLUSTER_HOST_ID), routing_key=CLUSTER_HOST_ID),)
-    CELERY_TASK_ROUTES['awx.main.tasks.cluster_node_heartbeat'] = {'queue': CLUSTER_HOST_ID, 'routing_key': CLUSTER_HOST_ID}
-    CELERY_TASK_ROUTES['awx.main.tasks.purge_old_stdout_files'] = {'queue': CLUSTER_HOST_ID, 'routing_key': CLUSTER_HOST_ID}
+
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+
+    REMOTE_HOST_HEADERS = ['HTTP_X_FORWARDED_FOR']
+
     STATIC_ROOT = '/var/lib/awx/public/static'
     PROJECTS_ROOT = '/var/lib/awx/projects'
     JOBOUTPUT_ROOT = '/var/lib/awx/job_status'
     SECRET_KEY = file('/etc/tower/SECRET_KEY', 'rb').read().strip()
     ALLOWED_HOSTS = ['*']
     INTERNAL_API_URL = 'http://127.0.0.1:8052'
-    AWX_TASK_ENV['HOME'] = '/var/lib/awx'
     SERVER_EMAIL = 'root@localhost'
     DEFAULT_FROM_EMAIL = 'webmaster@localhost'
     EMAIL_SUBJECT_PREFIX = '[AWX] '
@@ -64,28 +74,35 @@ data:
         'default': {
             'ATOMIC_REQUESTS': True,
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': "{{ default "awx" .Values.pg_database }}",
-            'USER': "{{ .Values.pg_username }}",
-            'PASSWORD': "{{ .Values.pg_password }}",
-            'HOST': "{{ .Values.pg_hostname }}",
-            'PORT': "{{ default "5432" .Values.pg_port }}",
+            'NAME': "{{ .Values.postgresql.postgresqlDatabase }}",
+            'USER': "{{ .Values.postgresql.postgresqlUsername }}",
+            'PASSWORD': "{{ .Values.postgresql.postgresqlPassword }}",
+            'HOST': "{{ include "awx.fullname" . }}-postgresql",
+            'PORT': "5432",
         }
     }
-    CELERY_BROKER_URL = 'amqp://{{ .Values.rabbitmq_user }}:{{ .Values.rabbitmq_password }}@{}:{}/{}'.format(
-        "{{ .Values.rabbitmq_host }}",
-        "{{ default "5672" .Values.rabbitmq_port }}",
-        "{{ default "awx" .Values.rabbitmq_vhost }}")
+
+    BROKER_URL = 'amqp://{}:{}@{}:{}/{}'.format(
+        "{{ .Values.rabbitmq.rabbitmq.username }}",
+        "{{ .Values.rabbitmq.rabbitmq.password }}",
+        "{{ include "awx.fullname" . }}-rabbitmq",
+        "{{ default "5672" .Values.rabbitmq.service.port }}",
+        "{{ default "awx" .Values.rabbitmq.vhost }}")
+
     CHANNEL_LAYERS = {
         'default': {'BACKEND': 'asgi_amqp.AMQPChannelLayer',
                     'ROUTING': 'awx.main.routing.channel_routing',
-                    'CONFIG': {'url': CELERY_BROKER_URL}}
+                    'CONFIG': {'url': BROKER_URL}}
     }
+
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '{}:{}'.format("{{ .Values.memcached_host }}", "{{ default "11211" .Values.memcached_port }}")
+            'LOCATION': '{}:{}'.format("{{ include "awx.fullname" . }}-memcached", "{{ default "11211" .Values.memcached_port }}")
         },
         'ephemeral': {
             'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         },
     }
+
+    USE_X_FORWARDED_PORT = True
