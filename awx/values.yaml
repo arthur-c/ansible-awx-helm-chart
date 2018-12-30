@@ -1,0 +1,106 @@
+# Default values for awx
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+# awx_web & tasks are deployed in the same pod
+awx_web:
+  image:
+    repository: ansible/awx_web
+    tag: 2.1.2
+    pullPolicy: IfNotPresent
+
+awx_task:
+  image:
+    repository: ansible/awx_task
+    tag: 2.1.2
+    pullPolicy: IfNotPresent
+
+# AWX config
+awx_secret_key: awxsecret
+default_admin_user: admin
+default_admin_password: password
+
+
+deployment:
+  annotations: {}
+
+service:
+  internalPort: 8052
+  externalPort: 8052
+
+  # name: nginx
+  # type: ClusterIP
+  # externalPort: 80
+  # internalPort: 80
+
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+    - chart-example.local
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls: []
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+memcached:
+  install: true
+
+rabbitmq:
+  install: true
+  rabbitmq:
+    username: awx
+    password: awx
+    ## Configution file content https://www.rabbitmq.com/configure.html#configuration-files
+    configuration: |-
+        ## Clustering
+        cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+        cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+        cluster_formation.node_cleanup.interval = 10
+        cluster_formation.node_cleanup.only_log_warning = false
+        cluster_partition_handling = autoheal
+        ## queue master locator
+        queue_master_locator=min-masters
+        ## enable guest user
+        loopback_users.guest = false
+        ## awx vhost
+        default_vhost = awx
+
+
+postgresql:
+  install: true
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: 9.6
+  postgresqlUsername: postgres
+  postgresqlPassword: awx
+  postgresqlDatabase: awx
+  persistence:
+    enabled: false
+  metrics:
+    enabled: false
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
