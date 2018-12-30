@@ -13,7 +13,7 @@ spec:
     - port: {{ .Values.service.externalPort }}
       targetPort: {{ .Values.service.internalPort }}
       protocol: TCP
-      name: {{ .Values.service.name }}
+      name: http
   selector:
     app.kubernetes.io/name: {{ include "awx.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
