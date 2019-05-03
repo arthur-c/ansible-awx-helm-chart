@@ -8,6 +8,11 @@ This chart bootstraps an [AWX](https://github.com/ansible/awx) deployment on
 a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh)
 package manager.
 
+## Before Installing
+```console
+helm serve
+```
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
@@ -74,4 +79,3 @@ Parameter | Description | Default
 `postgresql.postgresqlPassword` | postgresql password | `awx`
 `postgresql.postgresqlDatabase` | postgresql database | `awx`
 `postgresql.persistence.enabled` | postgresql persistence | `true`
-
