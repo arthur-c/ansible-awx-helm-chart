@@ -1,14 +1,14 @@
 ---
 dependencies:
   - name: rabbitmq
-    version: 4.0.1
+    version: 6.2.6
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: rabbitmq.install
   - name: postgresql
-    version: 3.7.1
+    version: 6.2.0
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: postgresql.install
   - name: memcached
-    version: 2.4.0
+    version: 2.9.0
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: memcached.install
