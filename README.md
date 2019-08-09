@@ -13,6 +13,14 @@ package manager.
 To install the chart with the release name `my-release`:
 
 ```console
+helm repo add kim0-awx https://raw.githubusercontent.com/kim0/ansible-awx-helm-chart/master/
+helm repo update
+helm install --name my-release kim0-awx/awx
+```
+
+To install the development version:
+
+```console
 helm dep up ./awx
 helm install --name my-release ./awx
 ```
