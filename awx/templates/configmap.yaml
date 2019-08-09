@@ -14,6 +14,10 @@ data:
     import socket
     ADMINS = ()
 
+    def get_secret():
+        if os.path.exists("/etc/tower/SECRET_KEY"):
+            return open('/etc/tower/SECRET_KEY', 'rb').read().strip()
+        return os.getenv("SECRET_KEY", "privateawx")
 
     AWX_PROOT_ENABLED = False
 
@@ -32,7 +36,8 @@ data:
     STATIC_ROOT = '/var/lib/awx/public/static'
     PROJECTS_ROOT = '/var/lib/awx/projects'
     JOBOUTPUT_ROOT = '/var/lib/awx/job_status'
-    SECRET_KEY = file('/etc/tower/SECRET_KEY', 'rb').read().strip()
+    # SECRET_KEY = file('/etc/tower/SECRET_KEY', 'rb').read().strip()
+    SECRET_KEY = get_secret()
     ALLOWED_HOSTS = ['*']
     INTERNAL_API_URL = 'http://127.0.0.1:8052'
     SERVER_EMAIL = 'root@localhost'
