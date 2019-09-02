@@ -40,6 +40,7 @@ data:
     SECRET_KEY = get_secret()
     ALLOWED_HOSTS = ['*']
     INTERNAL_API_URL = 'http://127.0.0.1:8052'
+    # Custom helm values
     TOWER_URL_BASE = '{{ .Values.url_base }}'
     SERVER_EMAIL = '{{ .Values.server_email }}'
     DEFAULT_FROM_EMAIL = '{{ .Values.default_from_email }}'
