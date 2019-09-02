@@ -82,4 +82,19 @@ Parameter | Description | Default
 `postgresql.postgresqlPassword` | postgresql password | `awx`
 `postgresql.postgresqlDatabase` | postgresql database | `awx`
 `postgresql.persistence.enabled` | postgresql persistence | `true`
-
+`metrics.enabled` | Start a side-car prometheus exporter | `false`
+`metrics.image.registry` | Exporter image registry | `docker.io`
+`metrics.image.repository` | Exporter image name | `bitnami/rabbitmq-exporter`
+`metrics.image.tag` | Exporter image tag | `{TAG_NAME}`
+`metrics.image.pullPolicy` | Exporter image pull policy | `IfNotPresent`
+`metrics.serviceMonitor.enabled` | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator | `false`
+`metrics.serviceMonitor.namespace` | Namespace where servicemonitor resource should be created | `nil`
+`metrics.serviceMonitor.interval` | Specify the interval at which metrics should be scraped | `30s`
+`metrics.serviceMonitor.scrapeTimeout`| Specify the timeout after which the scrape is ended | `nil`
+`metrics.serviceMonitor.relabellings`| Specify Metric Relabellings to add to the scrape endpoint | `nil`
+`metrics.serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels. | `false`
+`metrics.serviceMonitor.additionalLabels`| Used to pass Labels that are required by the Installed Prometheus Operator | `{}`
+`metrics.port` | Prometheus metrics exporter port | `9419`
+`metrics.env` | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#configuration) | `{}`
+`metrics.resources` | Exporter resource requests/limit | `nil`
+`metrics.capabilities` | Exporter: Comma-separated list of extended [scraping capabilities supported by the target RabbitMQ server](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort`
