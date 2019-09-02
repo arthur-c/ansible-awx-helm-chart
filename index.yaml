@@ -18,5 +18,5 @@ entries:
     - https://github.com/ansible/awx
     urls:
     - bins/awx-0.3.0.tgz
-    version: 0.3.0
-generated: "2019-08-09T18:26:02.819725+02:00"
+    version: 0.6.0
+generated: "2019-09-02T18:26:02.819725+02:00"
