@@ -44,11 +44,11 @@ data:
     TOWER_URL_BASE = '{{ .Values.awx_url_base }}'
     SERVER_EMAIL = '{{ .Values.server_email }}'
     DEFAULT_FROM_EMAIL = '{{ .Values.default_from_email }}'
-    EMAIL_SUBJECT_PREFIX = {{ .Values.email_subject_prefix }}
-    EMAIL_HOST = {{ .Values.email_host }}
-    EMAIL_PORT = {{ .Values.email_port }}
-    EMAIL_HOST_USER = {{ .Values.email_host_user }}
-    EMAIL_HOST_PASSWORD = {{ .Values.email_host_password }}
+    EMAIL_SUBJECT_PREFIX = '{{ .Values.email_subject_prefix }}'
+    EMAIL_HOST = '{{ .Values.email_host }}'
+    EMAIL_PORT = '{{ .Values.email_port }}'
+    EMAIL_HOST_USER = '{{ .Values.email_host_user }}'
+    EMAIL_HOST_PASSWORD = '{{ .Values.email_host_password }}'
     EMAIL_USE_TLS = {{ .Values.email_use_tls }}
 
     LOGGING['handlers']['console'] = {

@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "awx.fullname" . }}
-  {{- if .Values.metrics.serviceMonitor.namespace }}
+  {{-  if .Values.metrics.serviceMonitor.namespace }}
   namespace: {{ .Values.metrics.serviceMonitor.namespace }}
   {{- end }}
   labels:
@@ -16,7 +16,7 @@ metadata:
     {{- end }}
 spec:
   endpoints:
-  - port: metrics
+  - port: http
     interval: {{ .Values.metrics.serviceMonitor.interval }}
     {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
     scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}

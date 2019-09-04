@@ -28,7 +28,8 @@ spec:
           image: "{{ .Values.awx_web.image.repository }}:{{ .Values.awx_web.image.tag }}"
           imagePullPolicy: {{ .Values.awx_web.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
             httpGet:
               path: /
