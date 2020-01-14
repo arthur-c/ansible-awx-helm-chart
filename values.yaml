@@ -9,13 +9,13 @@ replicaCount: 1
 awx_web:
   image:
     repository: ansible/awx_web
-    tag: 6.1.0
+    tag: 9.1.0
     pullPolicy: IfNotPresent
 
 awx_task:
   image:
     repository: ansible/awx_task
-    tag: 6.1.0
+    tag: 9.1.0
     pullPolicy: IfNotPresent
 
 # AWX config
