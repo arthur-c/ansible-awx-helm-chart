@@ -14,6 +14,10 @@ data:
     import socket
     ADMINS = ()
 
+    def get_secret():
+        if os.path.exists("/etc/tower/SECRET_KEY"):
+            return open('/etc/tower/SECRET_KEY', 'rb').read().strip()
+        return os.getenv("SECRET_KEY", "privateawx")
 
     AWX_PROOT_ENABLED = False
 
@@ -32,17 +36,20 @@ data:
     STATIC_ROOT = '/var/lib/awx/public/static'
     PROJECTS_ROOT = '/var/lib/awx/projects'
     JOBOUTPUT_ROOT = '/var/lib/awx/job_status'
-    SECRET_KEY = file('/etc/tower/SECRET_KEY', 'rb').read().strip()
+    # SECRET_KEY = file('/etc/tower/SECRET_KEY', 'rb').read().strip()
+    SECRET_KEY = get_secret()
     ALLOWED_HOSTS = ['*']
     INTERNAL_API_URL = 'http://127.0.0.1:8052'
-    SERVER_EMAIL = 'root@localhost'
-    DEFAULT_FROM_EMAIL = 'webmaster@localhost'
-    EMAIL_SUBJECT_PREFIX = '[AWX] '
-    EMAIL_HOST = 'localhost'
-    EMAIL_PORT = 25
-    EMAIL_HOST_USER = ''
-    EMAIL_HOST_PASSWORD = ''
-    EMAIL_USE_TLS = False
+    # Custom helm values
+    TOWER_URL_BASE = '{{ .Values.awx_url_base }}'
+    SERVER_EMAIL = '{{ .Values.server_email }}'
+    DEFAULT_FROM_EMAIL = '{{ .Values.default_from_email }}'
+    EMAIL_SUBJECT_PREFIX = '{{ .Values.email_subject_prefix }}'
+    EMAIL_HOST = '{{ .Values.email_host }}'
+    EMAIL_PORT = '{{ .Values.email_port }}'
+    EMAIL_HOST_USER = '{{ .Values.email_host_user }}'
+    EMAIL_HOST_PASSWORD = '{{ .Values.email_host_password }}'
+    EMAIL_USE_TLS = {{ .Values.email_use_tls }}
 
     LOGGING['handlers']['console'] = {
         '()': 'logging.StreamHandler',

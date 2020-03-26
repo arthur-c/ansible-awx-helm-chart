@@ -28,7 +28,8 @@ spec:
           image: "{{ .Values.awx_web.image.repository }}:{{ .Values.awx_web.image.tag }}"
           imagePullPolicy: {{ .Values.awx_web.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
             httpGet:
               path: /
@@ -40,6 +41,9 @@ spec:
           volumeMounts:
             - mountPath: /etc/tower
               name: {{ include "awx.fullname" . }}-application-config
+            - name: {{ include "awx.fullname" . }}-nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
           env:
             - name: DATABASE_USER
               value: {{ .Values.postgresql.postgresqlUsername }}
@@ -53,8 +57,12 @@ spec:
               value: {{ .Values.postgresql.postgresqlPassword }}
             - name: MEMCACHED_HOST
               value: {{ include "awx.fullname" . }}-memcached
+            - name: MEMCACHED_PORT
+              value: "11211"
             - name: RABBITMQ_HOST
               value: {{ include "awx.fullname" . }}-rabbitmq
+            - name: RABBITMQ_PORT
+              value: "4369"
 
         - name: task
           image: "{{ .Values.awx_task.image.repository }}:{{ .Values.awx_task.image.tag }}"
@@ -77,8 +85,12 @@ spec:
               value: {{ .Values.postgresql.postgresqlPassword }}
             - name: MEMCACHED_HOST
               value: {{ include "awx.fullname" . }}-memcached
+            - name: MEMCACHED_PORT
+              value: "11211"
             - name: RABBITMQ_HOST
               value: {{ include "awx.fullname" . }}-rabbitmq
+            - name: RABBITMQ_PORT
+              value: "4369"
             - name: AWX_ADMIN_USER
               value: {{ .Values.default_admin_user }}
             - name: AWX_ADMIN_PASSWORD
@@ -99,3 +111,9 @@ spec:
                 path: settings.py
               - key: secret_key
                 path: SECRET_KEY
+        - name: {{ include "awx.fullname" . }}-nginx-config
+          configMap:
+            name: {{ include "awx.fullname" . }}-nginx-config
+            items:
+              - key: nginx_settings
+                path: nginx.conf
