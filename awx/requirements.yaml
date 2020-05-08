@@ -1,0 +1,14 @@
+---
+dependencies:
+  - name: rabbitmq
+    version: 6.25.8
+    repository: https://charts.bitnami.com/bitnami
+    condition: rabbitmq.install
+  - name: postgresql
+    version: 8.9.4
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.install
+  - name: memcached
+    version: 4.2.17
+    repository: https://charts.bitnami.com/bitnami
+    condition: memcached.install
