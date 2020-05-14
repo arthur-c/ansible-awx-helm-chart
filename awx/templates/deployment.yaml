@@ -49,8 +49,13 @@ spec:
               value: {{ .Values.postgresql.postgresqlUsername }}
             - name: DATABASE_NAME
               value: {{ .Values.postgresql.postgresqlDatabase }}
+              {{- if .Values.postgresql.install }}
             - name: DATABASE_HOST
               value: {{ include "awx.fullname" . }}-postgresql
+              {{- else }}
+            - name: DATABASE_HOST
+              value: {{ .Values.postgresql.postgresqlHostname }}
+              {{- end }}
             - name: DATABASE_PORT
               value: "5432"
             - name: DATABASE_PASSWORD
@@ -77,8 +82,13 @@ spec:
               value: {{ .Values.postgresql.postgresqlUsername }}
             - name: DATABASE_NAME
               value: {{ .Values.postgresql.postgresqlDatabase }}
+              {{- if .Values.postgresql.install }}
             - name: DATABASE_HOST
               value: {{ include "awx.fullname" . }}-postgresql
+              {{- else }}
+            - name: DATABASE_HOST
+              value: {{ .Values.postgresql.postgresqlHostname }}
+              {{- end }}
             - name: DATABASE_PORT
               value: "5432"
             - name: DATABASE_PASSWORD

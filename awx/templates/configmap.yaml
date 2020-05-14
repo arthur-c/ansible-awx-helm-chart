@@ -84,7 +84,11 @@ data:
             'NAME': "{{ .Values.postgresql.postgresqlDatabase }}",
             'USER': "{{ .Values.postgresql.postgresqlUsername }}",
             'PASSWORD': "{{ .Values.postgresql.postgresqlPassword }}",
+            {{- if .Values.postgresql.install }}
             'HOST': "{{ include "awx.fullname" . }}-postgresql",
+            {{- else }}
+            'HOST': "{{ .Values.postgresql.postgresqlHostname }}",
+            {{- end }}
             'PORT': "5432",
         }
     }
