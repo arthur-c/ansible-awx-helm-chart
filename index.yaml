@@ -3,7 +3,51 @@ entries:
   awx:
   - apiVersion: v1
     appVersion: 6.1.0
-    created: "2020-05-08T11:45:07.93832+02:00"
+    created: "2020-05-14T15:11:43.294561+02:00"
+    dependencies:
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 6.25.8
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.9.4
+    - condition: memcached.install
+      name: memcached
+      repository: https://charts.bitnami.com/bitnami
+      version: 4.2.17
+    description: Installs Ansible AWX (Ansible Web UI), with dependencies (rabbitmq,
+      postgresql, memcahed)
+    digest: e602b539b84d22d2863ac983d89914ce65b99427ac1587c39186210b9b6736ae
+    keywords:
+    - ansible
+    - awx
+    maintainers:
+    - email: email.ahmedkamal@googlemail.com
+      name: kim0
+    name: awx
+    sources:
+    - https://github.com/ansible/awx
+    urls:
+    - awx-0.7.1.tgz
+    version: 0.7.1
+  - apiVersion: v1
+    appVersion: 6.1.0
+    created: "2020-05-14T15:11:43.283154+02:00"
+    dependencies:
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 6.25.8
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.9.4
+    - condition: memcached.install
+      name: memcached
+      repository: https://charts.bitnami.com/bitnami
+      version: 4.2.17
     description: Installs Ansible AWX (Ansible Web UI), with dependencies (rabbitmq,
       postgresql, memcahed)
     digest: a4fbfdb591d53c3594528435ee16e44c07d3466c67d9edb80958612a4fd1390f
@@ -21,7 +65,20 @@ entries:
     version: 0.7.0
   - apiVersion: v1
     appVersion: 6.1.0
-    created: "2020-05-08T11:45:07.93355+02:00"
+    created: "2020-05-14T15:11:43.269972+02:00"
+    dependencies:
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 6.2.6
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 6.2.0
+    - condition: memcached.install
+      name: memcached
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 2.9.0
     description: Installs Ansible AWX (Ansible Web UI), with dependencies (rabbitmq,
       postgresql, memcahed)
     digest: b04a1e9d6b67914a740473aab612b112cb59eb5ad4ce43e73d0256ce6c29f7be
@@ -37,4 +94,4 @@ entries:
     urls:
     - awx-0.6.0.tgz
     version: 0.6.0
-generated: "2020-05-08T11:45:07.930758+02:00"
+generated: "2020-05-14T15:11:43.249956+02:00"
