@@ -1,7 +1,8 @@
 apiVersion: v1
 description: Installs Ansible AWX (Ansible Web UI), with dependencies (rabbitmq, postgresql, memcahed)
+icon: http://www.test.png
 name: awx
-version: 0.7.1
+version: 0.7.2
 appVersion: 6.1.0
 maintainers:
   - name: kim0
