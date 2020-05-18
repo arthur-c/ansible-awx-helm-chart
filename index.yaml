@@ -3,7 +3,39 @@ entries:
   awx:
   - apiVersion: v1
     appVersion: 6.1.0
-    created: "2020-05-14T15:11:43.294561+02:00"
+    created: "2020-05-18T12:40:28.598177+02:00"
+    dependencies:
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 6.25.8
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.9.4
+    - condition: memcached.install
+      name: memcached
+      repository: https://charts.bitnami.com/bitnami
+      version: 4.2.17
+    description: Installs Ansible AWX (Ansible Web UI), with dependencies (rabbitmq,
+      postgresql, memcahed)
+    digest: d7b6b951f08b0a323de96b0c9d8b724addf5930155b83f295b33beee82f35bd9
+    icon: http://www.test.png
+    keywords:
+    - ansible
+    - awx
+    maintainers:
+    - email: email.ahmedkamal@googlemail.com
+      name: kim0
+    name: awx
+    sources:
+    - https://github.com/ansible/awx
+    urls:
+    - awx-0.7.2.tgz
+    version: 0.7.2
+  - apiVersion: v1
+    appVersion: 6.1.0
+    created: "2020-05-18T12:40:28.588943+02:00"
     dependencies:
     - condition: rabbitmq.install
       name: rabbitmq
@@ -34,7 +66,7 @@ entries:
     version: 0.7.1
   - apiVersion: v1
     appVersion: 6.1.0
-    created: "2020-05-14T15:11:43.283154+02:00"
+    created: "2020-05-18T12:40:28.54912+02:00"
     dependencies:
     - condition: rabbitmq.install
       name: rabbitmq
@@ -65,7 +97,7 @@ entries:
     version: 0.7.0
   - apiVersion: v1
     appVersion: 6.1.0
-    created: "2020-05-14T15:11:43.269972+02:00"
+    created: "2020-05-18T12:40:28.513307+02:00"
     dependencies:
     - condition: rabbitmq.install
       name: rabbitmq
@@ -94,4 +126,4 @@ entries:
     urls:
     - awx-0.6.0.tgz
     version: 0.6.0
-generated: "2020-05-14T15:11:43.249956+02:00"
+generated: "2020-05-18T12:40:28.498472+02:00"
