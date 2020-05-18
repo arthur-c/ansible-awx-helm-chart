@@ -21,13 +21,13 @@ awx_task:
 # AWX config
 awx:
   secrets:
-    app: {}
+    app: []
     # Name of the kubernetes secret present on the namespace containing DB credentials like:
     # data:
     #   default_admin_user: admin
     #   default_admin_password: password
     #   awx_secret_key: awxsecret
-    database: {}  
+    database: []  
     # Name of the kubernetes secret present on the namespace containing DB credentials like:
     # data:
     #   host: hostname
@@ -38,7 +38,6 @@ awx:
 
 
 awx_url_base: 'https://towerhost'
-awx_secret_key: awxsecret
 server_email: 'root@localhost'
 default_from_email: 'webmaster@localhost'
 email_subject_prefix: '[AWX] '
