@@ -19,11 +19,25 @@ awx_task:
     pullPolicy: IfNotPresent
 
 # AWX config
-awx_secret_key: awxsecret
-awx_url_base: 'https://towerhost'
-default_admin_user: admin
-default_admin_password: password
+awx:
+  secrets:
+    app: []
+    # Name of the kubernetes secret present on the namespace containing DB credentials like:
+    # data:
+    #   default_admin_user: admin
+    #   default_admin_password: password
+    #   awx_secret_key: awxsecret
+    database: []  
+    # Name of the kubernetes secret present on the namespace containing DB credentials like:
+    # data:
+    #   host: hostname
+    #   user: awx 
+    #   password: secretpassword
+    #   database: awx
+    #   port: 5432
 
+
+awx_url_base: 'https://towerhost'
 server_email: 'root@localhost'
 default_from_email: 'webmaster@localhost'
 email_subject_prefix: '[AWX] '

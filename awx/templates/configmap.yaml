@@ -8,16 +8,11 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  secret_key: {{ .Values.awx_secret_key }}
+  # secret_key: {{ .Values.awx_secret_key }}
   awx_settings: |
     import os
     import socket
     ADMINS = ()
-
-    def get_secret():
-        if os.path.exists("/etc/tower/SECRET_KEY"):
-            return open('/etc/tower/SECRET_KEY', 'rb').read().strip()
-        return os.getenv("SECRET_KEY", "privateawx")
 
     AWX_PROOT_ENABLED = False
 
@@ -36,8 +31,7 @@ data:
     STATIC_ROOT = '/var/lib/awx/public/static'
     PROJECTS_ROOT = '/var/lib/awx/projects'
     JOBOUTPUT_ROOT = '/var/lib/awx/job_status'
-    # SECRET_KEY = file('/etc/tower/SECRET_KEY', 'rb').read().strip()
-    SECRET_KEY = get_secret()
+    SECRET_KEY = os.environ['AWX_SECRET_KEY'] 
     ALLOWED_HOSTS = ['*']
     INTERNAL_API_URL = 'http://127.0.0.1:8052'
     # Custom helm values
@@ -81,10 +75,17 @@ data:
         'default': {
             'ATOMIC_REQUESTS': True,
             'ENGINE': 'django.db.backends.postgresql',
+            {{- if .Values.postgresql.install }}
             'NAME': "{{ .Values.postgresql.postgresqlDatabase }}",
             'USER': "{{ .Values.postgresql.postgresqlUsername }}",
             'PASSWORD': "{{ .Values.postgresql.postgresqlPassword }}",
             'HOST': "{{ include "awx.fullname" . }}-postgresql",
+            {{- else }}
+            'NAME': os.environ['DATABASE_NAME'],
+            'USER': os.environ['DATABASE_USER'],
+            'PASSWORD': os.environ['DATABASE_PASSWORD'],            
+            'HOST': os.environ['DATABASE_HOST'],
+            {{- end }}
             'PORT': "5432",
         }
     }

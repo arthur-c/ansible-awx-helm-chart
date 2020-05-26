@@ -1,0 +1,202 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "awx.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "awx.name" . }}
+    helm.sh/chart: {{ include "awx.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    {{- range $key, $value := .Values.deployment.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "awx.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "awx.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: web
+          image: "{{ .Values.awx_web.image.repository }}:{{ .Values.awx_web.image.tag }}"
+          imagePullPolicy: {{ .Values.awx_web.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          volumeMounts:
+            - mountPath: /etc/tower
+              name: {{ include "awx.fullname" . }}-application-config
+            - name: {{ include "awx.fullname" . }}-nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          env:
+            - name: DATABASE_USER
+              {{- if .Values.postgresql.install }}
+              value: {{ .Values.postgresql.postgresqlUsername }}
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database user. Make sure to set `awx.secrets.database`" }}
+                  key: user
+              {{- end }}
+            - name: DATABASE_NAME
+              {{- if .Values.postgresql.install }}
+              value: {{ .Values.postgresql.postgresqlDatabase }}
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database name. Make sure to set `awx.secrets.database`" }}
+                  key: database
+              {{- end }}
+            - name: DATABASE_HOST
+              {{- if .Values.postgresql.install }}
+              value: {{ include "awx.fullname" . }}-postgresql
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database host. Make sure to set `awx.secrets.database`" }}
+                  key: host
+              {{- end }}
+            - name: DATABASE_PORT
+              {{- if .Values.postgresql.install }}
+              value: "5432"
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database port. Make sure to set `awx.secrets.database`" }}
+                  key: port
+              {{- end }}
+            - name: DATABASE_PASSWORD
+              {{- if .Values.postgresql.install }}
+              value: {{ .Values.postgresql.postgresqlPassword }}
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database password. Make sure to set `awx.secrets.database`" }}
+                  key: password
+              {{- end }}
+            - name: MEMCACHED_HOST
+              value: {{ include "awx.fullname" . }}-memcached
+            - name: MEMCACHED_PORT
+              value: "11211"
+            - name: RABBITMQ_HOST
+              value: {{ include "awx.fullname" . }}-rabbitmq
+            - name: RABBITMQ_PORT
+              value: "4369"
+            - name: AWX_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.app | required "Missing required secret containing the awx_secret_key. Make sure to set `awx.secrets.app`" }}
+                  key: awx_secret_key
+
+        - name: task
+          image: "{{ .Values.awx_task.image.repository }}:{{ .Values.awx_task.image.tag }}"
+          imagePullPolicy: {{ .Values.awx_task.image.pullPolicy }}
+          command:
+            - /usr/bin/launch_awx_task.sh
+          volumeMounts:
+            - mountPath: /etc/tower
+              name: {{ include "awx.fullname" . }}-application-config
+          env:
+            - name: DATABASE_USER
+              {{- if .Values.postgresql.install }}
+              value: {{ .Values.postgresql.postgresqlUsername }}
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database user. Make sure to set `awx.secrets.database`" }}
+                  key: user
+              {{- end }}
+            - name: DATABASE_NAME
+              {{- if .Values.postgresql.install }}
+              value: {{ .Values.postgresql.postgresqlDatabase }}
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database name. Make sure to set `awx.secrets.database`" }}
+                  key: database
+              {{- end }}
+            - name: DATABASE_HOST
+              {{- if .Values.postgresql.install }}
+              value: {{ include "awx.fullname" . }}-postgresql
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database host. Make sure to set `awx.secrets.database`" }}
+                  key: host
+              {{- end }}
+            - name: DATABASE_PORT
+              {{- if .Values.postgresql.install }}
+              value: "5432"
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database port. Make sure to set `awx.secrets.database`" }}
+                  key: port
+              {{- end }}
+            - name: DATABASE_PASSWORD
+              {{- if .Values.postgresql.install }}
+              value: {{ .Values.postgresql.postgresqlPassword }}
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.database | required "Missing required secret containing the database password. Make sure to set `awx.secrets.database`" }}
+                  key: password
+              {{- end }}
+            - name: MEMCACHED_HOST
+              value: {{ include "awx.fullname" . }}-memcached
+            - name: MEMCACHED_PORT
+              value: "11211"
+            - name: RABBITMQ_HOST
+              value: {{ include "awx.fullname" . }}-rabbitmq
+            - name: RABBITMQ_PORT
+              value: "4369"
+            - name: AWX_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.app | required "Missing required secret containing the default_admin_user. Make sure to set `awx.secrets.app`" }}
+                  key: default_admin_user
+            - name: AWX_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.app | required "Missing required secret containing the default_admin_password. Make sure to set `awx.secrets.app`" }}
+                  key: default_admin_password
+            - name: AWX_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.awx.secrets.app | required "Missing required secret containing the awx_secret_key. Make sure to set `awx.secrets.app`" }}
+                  key: awx_secret_key
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: {{ include "awx.fullname" . }}-application-config
+          configMap:
+            name: {{ include "awx.fullname" . }}-application-config
+            items:
+              - key: awx_settings
+                path: settings.py
+        - name: {{ include "awx.fullname" . }}-nginx-config
+          configMap:
+            name: {{ include "awx.fullname" . }}-nginx-config
+            items:
+              - key: nginx_settings
+                path: nginx.conf
